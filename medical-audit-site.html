@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Under the Microscope — Media Medical Audits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --border: #2a2a2a;
+    --text: #e8e2d9;
+    --muted: #7a7367;
+    --accent-house: #c9472b;
+    --accent-cells: #e8b84b;
+    --accent-tlou: #5a8a5e;
+    --verdict-fact: #3a7a4a;
+    --verdict-fiction: #8b2a2a;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 6rem 8vw;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-bg {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent, transparent 79px, #1a1a1a 79px, #1a1a1a 80px),
+      repeating-linear-gradient(0deg, transparent, transparent 79px, #1a1a1a 79px, #1a1a1a 80px);
+    opacity: 0.5;
+  }
+
+  .header-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 50%, transparent 30%, var(--bg) 80%);
+  }
+
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    position: relative;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .header-title {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 900;
+    line-height: 0.95;
+    position: relative;
+    animation: fadeUp 0.8s 0.1s ease both;
+    max-width: 14ch;
+  }
+
+  .header-title em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .header-sub {
+    margin-top: 2rem;
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 42ch;
+    position: relative;
+    animation: fadeUp 0.8s 0.2s ease both;
+    line-height: 1.6;
+  }
+
+  .header-cases {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .case-pill {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2px;
+    border: 1px solid;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .case-pill.house { color: var(--accent-house); border-color: var(--accent-house); }
+  .case-pill.cells { color: var(--accent-cells); border-color: var(--accent-cells); }
+  .case-pill.tlou  { color: var(--accent-tlou);  border-color: var(--accent-tlou); }
+
+  .case-pill:hover { opacity: 0.7; transform: translateY(-2px); }
+
+  .header-scroll {
+    position: absolute;
+    bottom: 2.5rem; left: 8vw;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 0.7rem;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .header-scroll::before {
+    content: '';
+    display: block;
+    width: 30px; height: 1px;
+    background: var(--muted);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 8vw;
+  }
+
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── AUDIT WRAPPER ── */
+  .audit {
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── AUDIT HERO ── */
+  .audit-hero {
+    padding: 5rem 8vw 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .audit-hero::before {
+    content: attr(data-num);
+    position: absolute;
+    right: 6vw; top: 2rem;
+    font-family: var(--serif);
+    font-size: clamp(8rem, 20vw, 18rem);
+    font-weight: 900;
+    opacity: 0.04;
+    line-height: 1;
+    color: var(--text);
+    pointer-events: none;
+  }
+
+  .audit-meta {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .audit-title {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    max-width: 18ch;
+  }
+
+  .audit-title .show-tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-family: var(--mono);
+    font-weight: 400;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    position: relative;
+    top: -4px;
+  }
+
+  .audit.house .audit-title .show-tag { background: rgba(201,71,43,0.15); color: var(--accent-house); }
+  .audit.cells .audit-title .show-tag { background: rgba(232,184,75,0.15); color: var(--accent-cells); }
+  .audit.tlou  .audit-title .show-tag { background: rgba(90,138,94,0.15);  color: var(--accent-tlou); }
+
+  .audit-subtitle {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 55ch;
+  }
+
+  /* ── VERDICT BANNER ── */
+  .verdict {
+    margin: 2rem 8vw;
+    padding: 1.2rem 2rem;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border: 1px solid;
+  }
+
+  .verdict.fact    { background: rgba(58,122,74,0.1);  border-color: rgba(58,122,74,0.4); }
+  .verdict.fiction { background: rgba(139,42,42,0.1);  border-color: rgba(139,42,42,0.4); }
+
+  .verdict-badge {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 900;
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .verdict.fact    .verdict-badge { color: #5bbf72; }
+  .verdict.fiction .verdict-badge { color: #d95757; }
+
+  .verdict-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .verdict-text strong { color: var(--text); }
+
+  /* ── CONTENT GRID ── */
+  .audit-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .audit-main {
+    padding: 3rem 8vw 3rem 8vw;
+    border-right: 1px solid var(--border);
+  }
+
+  .audit-sidebar {
+    padding: 2.5rem 2rem;
+    background: var(--surface);
+  }
+
+  /* ── CONTENT BLOCKS ── */
+  .content-section {
+    margin-bottom: 3.5rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 60px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .section-body {
+    font-size: 0.95rem;
+    color: #c8c2b8;
+    max-width: 65ch;
+    line-height: 1.8;
+  }
+
+  .section-body p + p { margin-top: 1em; }
+
+  /* ── VIDEO EMBED SLOT ── */
+  .video-slot {
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 2rem 0;
+    position: relative;
+  }
+
+  .video-slot iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border: none;
+  }
+
+  .video-slot-placeholder {
+    aspect-ratio: 16/9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: #0a0a0a;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .video-slot-placeholder .play-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 1.2rem;
+  }
+
+  .video-slot-placeholder p {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .video-slot-placeholder span {
+    font-size: 0.75rem;
+    color: #3a3a3a;
+    font-family: var(--mono);
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 1.5rem 0;
+  }
+
+  .compare-table th {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 0.9rem 1rem;
+    vertical-align: top;
+    border-bottom: 1px solid #1c1c1c;
+    color: #c8c2b8;
+    line-height: 1.55;
+  }
+
+  .compare-table td:first-child {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    white-space: nowrap;
+    width: 110px;
+  }
+
+  .compare-table .on-screen { color: #d95757; }
+  .compare-table .real-world { color: #5bbf72; }
+
+  /* ── FACT CARDS ── */
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .fact-card {
+    background: var(--surface);
+    padding: 1.4rem;
+    transition: background 0.2s;
+  }
+
+  .fact-card:hover { background: #1a1a1a; }
+
+  .fact-card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .fact-card-num {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .fact-card-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── INTERACTIVE FUNFACT ── */
+  .funfact-block {
+    border-left: 3px solid;
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+    background: rgba(255,255,255,0.02);
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .funfact-block:hover { background: rgba(255,255,255,0.04); }
+
+  .audit.house .funfact-block { border-color: var(--accent-house); }
+  .audit.cells .funfact-block { border-color: var(--accent-cells); }
+  .audit.tlou  .funfact-block { border-color: var(--accent-tlou); }
+
+  .funfact-header {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .funfact-toggle {
+    transition: transform 0.3s;
+    font-size: 0.8rem;
+  }
+
+  .funfact-toggle.open { transform: rotate(180deg); }
+
+  .funfact-question {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+
+  .funfact-answer {
+    margin-top: 0.8rem;
+    font-size: 0.88rem;
+    color: #c8c2b8;
+    line-height: 1.7;
+    display: none;
+  }
+
+  .funfact-answer.visible { display: block; }
+
+  /* ── SIDEBAR MODULES ── */
+  .sidebar-module {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-module:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    line-height: 1.25;
+  }
+
+  .sidebar-body {
+    font-size: 0.82rem;
+    color: #a09890;
+    line-height: 1.7;
+  }
+
+  .sidebar-body p + p { margin-top: 0.75em; }
+
+  /* ── TAPEWORM ANATOMY SVG SIDEBAR ── */
+  .tapeworm-diagram {
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  /* ── SYMPTOMS LIST ── */
+  .symptom-list {
+    list-style: none;
+    margin: 0.75rem 0;
+  }
+
+  .symptom-list li {
+    font-size: 0.82rem;
+    color: #a09890;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #1e1e1e;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+
+  .symptom-list li::before {
+    content: '';
+    display: block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* ── DRUG TABLE SIDEBAR ── */
+  .drug-row {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #1e1e1e;
+  }
+
+  .drug-name {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .drug-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── LETHAL TRIAD VISUAL ── */
+  .triad-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.75rem 0;
+  }
+
+  .triad-item {
+    background: var(--surface);
+    padding: 0.8rem 0.6rem;
+    text-align: center;
+  }
+
+  .triad-icon { font-size: 1.2rem; margin-bottom: 0.3rem; }
+
+  .triad-name {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+
+  /* ── WOUND TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0.4rem 0 0.8rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.25rem; top: 0.5rem;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    border: 1px solid var(--muted);
+    background: var(--bg);
+  }
+
+  .timeline-time {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  .timeline-event {
+    font-size: 0.8rem;
+    color: #a09890;
+    line-height: 1.4;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-block {
+    background: #0f0f0f;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.4rem;
+    margin: 2rem 0;
+  }
+
+  .quiz-question {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .quiz-opt {
+    font-size: 0.85rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+
+  .quiz-opt:hover { border-color: var(--muted); background: #1a1a1a; }
+  .quiz-opt.correct { border-color: #5bbf72; background: rgba(91,191,114,0.08); color: #5bbf72; }
+  .quiz-opt.wrong   { border-color: #d95757; background: rgba(217,87,87,0.08); color: #d95757; }
+  .quiz-opt:disabled { cursor: default; }
+
+  .quiz-feedback {
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--muted);
+    display: none;
+  }
+
+  .quiz-feedback.visible { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 4rem 8vw;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.6rem;
+    color: var(--muted);
+  }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: #3a3a3a;
+    max-width: 40ch;
+    line-height: 1.7;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .audit-grid { grid-template-columns: 1fr; }
+    .audit-sidebar { border-top: 1px solid var(--border); }
+    .audit-main { border-right: none; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .audit-hero { padding: 3rem 5vw 2rem; }
+    .audit-main { padding: 2rem 5vw; }
+    .verdict { margin: 1rem 5vw; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header>
+  <div class="header-bg"></div>
+  <p class="header-eyebrow">Media Medical Audits — Vol. 1</p>
+  <h1 class="header-title">Under the <em>Microscope</em></h1>
+  <p class="header-sub">Three case studies examining the gap between Hollywood medicine and what would actually happen in a real trauma bay.</p>
+  <div class="header-cases">
+    <a href="#house" class="case-pill house">House M.D. — Tapeworm</a>
+    <a href="#cells" class="case-pill cells">Cells at Work! — Hemorrhage</a>
+    <a href="#tlou"  class="case-pill tlou">The Last of Us — Rebar</a>
+  </div>
+  <p class="header-scroll">Scroll to begin</p>
+</header>
+
+<!-- ─── NAV ────────────────────────────────────────── -->
+<nav>
+  <span class="nav-brand">Under the Microscope</span>
+  <ul class="nav-links">
+    <li><a href="#house">Audit 01</a></li>
+    <li><a href="#cells">Audit 02</a></li>
+    <li><a href="#tlou">Audit 03</a></li>
+  </ul>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- AUDIT 01 — HOUSE M.D.                             -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="audit house" id="house">
+
+  <div class="audit-hero" data-num="01">
+    <p class="audit-meta">Audit 01 · House M.D. · S3:E14 "Insensitive"</p>
+    <h2 class="audit-title">
+      <span class="show-tag">TV Drama</span>
+      The 30-Foot Tapeworm Removal
+    </h2>
+    <p class="audit-subtitle">A patient with Congenital Insensitivity to Pain undergoes a manual, open-bowel tapeworm extraction. No anesthesia required — she literally cannot feel it.</p>
+  </div>
+
+  <div class="verdict fiction" style="margin: 0 8vw 2rem;">
+    <div class="verdict-badge">Fiction</div>
+    <div class="verdict-text">
+      <strong>The biology is real. The procedure is pure Hollywood.</strong> A Diphyllobothrium latum tapeworm absolutely can grow to 25 feet and cause B12-deficiency seizures. But no doctor would hand-extract one when two pills would do the job.
+    </div>
+  </div>
+
+  <div class="audit-grid">
+    <div class="audit-main">
+
+      <!-- VIDEO SLOT -->
+      <div class="content-section">
+        <div class="section-label">Scene Clip</div>
+        <div class="video-slot">
+          <div class="video-slot-placeholder">
+            <div class="play-icon">▶</div>
+            <p>Embed Scene Clip Here</p>
+            <span>House M.D. S3:E14 — Tapeworm extraction sequence</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHAT HAPPENED -->
+      <div class="content-section">
+        <div class="section-label">The Emergency</div>
+        <h3 class="section-title">How a Fish Led to Seizures</h3>
+        <div class="section-body">
+          <p>Hannah contracted a fish tapeworm (<em>Diphyllobothrium latum</em>) from eating raw or undercooked contaminated freshwater fish — trout or perch from a lake. The parasite established itself in her small intestine and, over time, grew to a staggering 25 feet.</p>
+          <p>The critical detail: this species is a voracious absorber of Vitamin B12. As it fed, it stripped nearly all dietary B12 from Hannah's digested food, driving her into severe megaloblastic anemia. The neurological cascade from that deficiency is what caused her seizures — the tapeworm was the hidden root cause of what looked like an unrelated neurological event.</p>
+        </div>
+      </div>
+
+      <!-- QUICK FACTS -->
+      <div class="fact-grid">
+        <div class="fact-card">
+          <div class="fact-card-icon">📏</div>
+          <div class="fact-card-num" style="color: var(--accent-house)">82 ft</div>
+          <div class="fact-card-label">World record tapeworm length (25 metres)</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-card-icon">🧬</div>
+          <div class="fact-card-num" style="color: var(--accent-house)">B12</div>
+          <div class="fact-card-label">The only vitamin this species selectively depletes</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-card-icon">💊</div>
+          <div class="fact-card-num" style="color: var(--accent-house)">1 Rx</div>
+          <div class="fact-card-label">Praziquantel: a single oral dose kills the worm</div>
+        </div>
+      </div>
+
+      <!-- ON-SCREEN vs REAL -->
+      <div class="content-section">
+        <div class="section-label">On Screen vs. Reality</div>
+        <h3 class="section-title">What House Did vs. What Would Actually Happen</h3>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="on-screen">On Screen</th>
+              <th class="real-world">Real World</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Removal method</td>
+              <td class="on-screen">Open incision; hands and forceps extract the live worm manually</td>
+              <td class="real-world">Oral praziquantel — paralyzes and dislodges the worm, passed naturally</td>
+            </tr>
+            <tr>
+              <td>Anesthesia</td>
+              <td class="on-screen">None (patient has CIP and cannot feel pain)</td>
+              <td class="real-world">N/A — drug treatment requires no surgery at all</td>
+            </tr>
+            <tr>
+              <td>Worm integrity</td>
+              <td class="on-screen">Pulled out in one continuous piece, intact</td>
+              <td class="real-world">Manual pulling would snap the body; the scolex (head) remains hooked and regrows</td>
+            </tr>
+            <tr>
+              <td>Infection risk</td>
+              <td class="on-screen">None shown</td>
+              <td class="real-world">Open bowel = gut bacteria flood sterile cavity → peritonitis → septic shock</td>
+            </tr>
+            <tr>
+              <td>Follow-up</td>
+              <td class="on-screen">Scene ends</td>
+              <td class="real-world">Stool checks every 1–3 months to confirm complete elimination</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- UNTREATED -->
+      <div class="content-section">
+        <div class="section-label">If Left Untreated</div>
+        <h3 class="section-title">The Road to Irreversible Damage</h3>
+        <div class="section-body">
+          <p>Prolonged B12 deficiency from an untreated fish tapeworm triggers a condition called <strong>subacute combined degeneration of the spinal cord</strong>. The myelin sheaths protecting nerve fibers begin to break down — a process that, past a certain threshold, cannot be reversed.</p>
+          <p>The progression: worsening weakness → loss of coordination → permanent nerve damage → psychiatric deterioration → profound anemia → organ failure → death. The window for full recovery is real but finite.</p>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE FUNFACT -->
+      <div class="funfact-block" onclick="toggleFact(this)">
+        <div class="funfact-header">
+          <span>⚡ Did You Know?</span>
+          <span class="funfact-toggle">▾</span>
+        </div>
+        <div class="funfact-question">"What exactly is Congenital Insensitivity to Pain — and is it actually a real condition?"</div>
+        <div class="funfact-answer">
+          Yes, completely real. CIP (also called CIPA when combined with anhidrosis) is a rare genetic disorder — primarily mutations in the NTRK1 gene — that eliminates the ability to perceive physical pain. It sounds like a superpower but is devastatingly dangerous: sufferers routinely break bones, damage joints, and sustain serious injuries without knowing. Many die young from undetected internal damage. Hannah's inability to feel the tapeworm growing inside her for years is medically plausible.
+        </div>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="quiz-block">
+        <div class="quiz-question">"Which part of the tapeworm absolutely must be expelled for treatment to be successful?"</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false, 'Close — the proglottids are the body segments, but the worm can regrow from the neck even without them.')">The proglottids (body segments)</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true, 'Correct. The scolex is the head, and the neck directly below it is the regenerative zone. Leave either behind and the entire worm grows back. Praziquantel works by paralyzing the scolex so it releases its grip and passes out naturally.')">The scolex and neck (the head)</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false, 'The tail end is the oldest, most spent part of the worm — not the regenerative source.')">The tail end</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+    </div><!-- /audit-main -->
+
+    <!-- SIDEBAR: TAPEWORM ANATOMY -->
+    <aside class="audit-sidebar">
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Biology Spotlight</div>
+        <h4 class="sidebar-title">Anatomy of Diphyllobothrium latum</h4>
+
+        <!-- SVG tapeworm diagram -->
+        <svg class="tapeworm-diagram" viewBox="0 0 260 420" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+          <defs>
+            <linearGradient id="wormGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#3a2a1a"/>
+              <stop offset="100%" stop-color="#5a3c20"/>
+            </linearGradient>
+          </defs>
+
+          <!-- worm body segments (simplified) -->
+          <g opacity="0.9">
+            <!-- scolex -->
+            <ellipse cx="130" cy="30" rx="18" ry="14" fill="#c9472b" opacity="0.85"/>
+            <text x="160" y="34" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#7a7367" letter-spacing="0.05em">SCOLEX</text>
+            <text x="160" y="44" font-family="'DM Sans',sans-serif" font-size="7" fill="#504840">(attachment head)</text>
+            <line x1="155" y1="30" x2="148" y2="30" stroke="#3a3020" stroke-width="0.5"/>
+
+            <!-- neck -->
+            <rect x="123" y="44" width="14" height="16" rx="3" fill="#8b3820" opacity="0.7"/>
+            <text x="148" y="58" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#7a7367" letter-spacing="0.05em">NECK</text>
+            <text x="148" y="68" font-family="'DM Sans',sans-serif" font-size="7" fill="#504840">(regenerative zone)</text>
+            <line x1="144" y1="54" x2="137" y2="54" stroke="#3a3020" stroke-width="0.5"/>
+
+            <!-- strobila / body segments -->
+            <g id="segments">
+              <!-- immature proglottids -->
+              <rect x="118" y="60" width="24" height="10" rx="1" fill="url(#wormGrad)" opacity="0.6"/>
+              <rect x="118" y="71" width="24" height="10" rx="1" fill="url(#wormGrad)" opacity="0.6"/>
+              <rect x="118" y="82" width="24" height="11" rx="1" fill="url(#wormGrad)" opacity="0.65"/>
+              <text x="6" y="82" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#7a7367" letter-spacing="0.05em">IMMATURE</text>
+              <text x="6" y="91" font-family="'DM Sans',sans-serif" font-size="7" fill="#504840">proglottids</text>
+              <line x1="116" y1="80" x2="60" y2="80" stroke="#2a2018" stroke-width="0.5"/>
+
+              <!-- mature proglottids -->
+              <rect x="115" y="93" width="30" height="11" rx="1" fill="url(#wormGrad)" opacity="0.72"/>
+              <rect x="115" y="105" width="30" height="12" rx="1" fill="url(#wormGrad)" opacity="0.72"/>
+              <rect x="115" y="118" width="30" height="12" rx="1" fill="url(#wormGrad)" opacity="0.75"/>
+              <rect x="115" y="131" width="30" height="13" rx="1" fill="url(#wormGrad)" opacity="0.77"/>
+              <text x="158" y="120" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#7a7367" letter-spacing="0.05em">MATURE</text>
+              <text x="158" y="130" font-family="'DM Sans',sans-serif" font-size="7" fill="#504840">proglottids</text>
+              <line x1="145" y1="124" x2="155" y2="124" stroke="#2a2018" stroke-width="0.5"/>
+
+              <!-- gravid proglottids (egg-filled) -->
+              <rect x="112" y="145" width="36" height="13" rx="1" fill="#6b3a18" opacity="0.8"/>
+              <rect x="112" y="159" width="36" height="14" rx="1" fill="#6b3a18" opacity="0.8"/>
+              <rect x="112" y="174" width="36" height="14" rx="1" fill="#6b3a18" opacity="0.82"/>
+              <rect x="112" y="189" width="36" height="15" rx="1" fill="#6b3a18" opacity="0.84"/>
+              <rect x="112" y="205" width="36" height="15" rx="1" fill="#6b3a18" opacity="0.85"/>
+              <text x="6" y="183" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#7a7367" letter-spacing="0.05em">GRAVID</text>
+              <text x="6" y="192" font-family="'DM Sans',sans-serif" font-size="7" fill="#504840">egg-filled</text>
+              <line x1="110" y1="188" x2="60" y2="188" stroke="#2a2018" stroke-width="0.5"/>
+            </g>
+
+            <!-- tail notation -->
+            <text x="120" y="240" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#3a3028" letter-spacing="0.05em">· · ·</text>
+            <text x="90" y="258" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#504840">continues up to 25+ ft</text>
+
+            <!-- scale bar -->
+            <line x1="90" y1="280" x2="170" y2="280" stroke="#2a2018" stroke-width="1"/>
+            <line x1="90" y1="276" x2="90" y2="284" stroke="#2a2018" stroke-width="1"/>
+            <line x1="170" y1="276" x2="170" y2="284" stroke="#2a2018" stroke-width="1"/>
+            <text x="112" y="295" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#504840">~1 cm (repr.)</text>
+          </g>
+
+          <!-- B12 absorption callout -->
+          <g transform="translate(0,310)">
+            <rect x="10" y="0" width="240" height="50" rx="3" fill="#1a0f08" stroke="#3a2018" stroke-width="0.8"/>
+            <text x="20" y="16" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#c9472b" letter-spacing="0.15em">B12 ABSORPTION MECHANISM</text>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="8" fill="#806050" width="220">The worm expresses intrinsic factor receptors</text>
+            <text x="20" y="41" font-family="'DM Sans',sans-serif" font-size="8" fill="#806050">that intercept dietary B12 before the host can.</text>
+          </g>
+        </svg>
+
+        <div class="sidebar-body">
+          <p>The scolex grips the intestinal wall with two elongated, groove-like suckers called <em>bothria</em>. Below it, the neck is the true danger zone — the region of cell division that generates the entire chain of body segments (proglottids). Gravid proglottids at the tail are packed with fertilized eggs and are shed into the host's stool.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Real Medications</div>
+        <h4 class="sidebar-title">How Doctors Actually Kill Tapeworms</h4>
+        <div class="drug-row">
+          <div class="drug-name">Praziquantel (Biltricide®) — First choice</div>
+          <div class="drug-desc">Causes rapid, sustained muscle contraction and spasm, paralysing the scolex. The worm detaches and is excreted. Also damages the worm's outer membrane.</div>
+        </div>
+        <div class="drug-row">
+          <div class="drug-name">Albendazole (Albenza®)</div>
+          <div class="drug-desc">Inhibits microtubule synthesis inside the worm's cells, blocking glucose uptake. Used when praziquantel is unavailable or for systemic larval infections.</div>
+        </div>
+        <div class="drug-row">
+          <div class="drug-name">Nitazoxanide (Alinia®)</div>
+          <div class="drug-desc">Disrupts the worm's anaerobic energy metabolism. Broad-spectrum; often used in younger patients.</div>
+        </div>
+      </div>
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Diagnostic Methods</div>
+        <h4 class="sidebar-title">How to Confirm Infection</h4>
+        <ul class="symptom-list">
+          <li>Ova and parasite (O&P) stool examination — checks for eggs and segments</li>
+          <li>Species identification under microscope determines dose</li>
+          <li>Serum B12 level — confirms deficiency severity</li>
+          <li>Full blood count for megaloblastic anemia markers</li>
+          <li>MRI if neurological symptoms suggest spinal cord involvement</li>
+        </ul>
+      </div>
+
+    </aside>
+  </div><!-- /audit-grid -->
+</section>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- AUDIT 02 — CELLS AT WORK!                         -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="audit cells" id="cells">
+
+  <div class="audit-hero" data-num="02">
+    <p class="audit-meta">Audit 02 · Cells at Work! (はたらく細胞) · S1:E12–13</p>
+    <h2 class="audit-title">
+      <span class="show-tag">Anime</span>
+      Hemorrhagic Shock
+    </h2>
+    <p class="audit-subtitle">A catastrophic head injury triggers massive blood loss. Inside the body, depicted as a freezing blizzard, the red blood cells fight to keep organs alive long enough for a blood transfusion to arrive.</p>
+  </div>
+
+  <div class="verdict fact" style="margin: 0 8vw 2rem;">
+    <div class="verdict-badge">Fact</div>
+    <div class="verdict-text">
+      <strong>The underlying biology is nearly textbook-accurate.</strong> The anime correctly depicts the pressure drop, the hypothermia, the exhausted red blood cells, and the necessity of transfusion. It earns its accuracy badge.
+    </div>
+  </div>
+
+  <div class="audit-grid">
+    <div class="audit-main">
+
+      <!-- VIDEO SLOT -->
+      <div class="content-section">
+        <div class="section-label">Scene Clip</div>
+        <div class="video-slot">
+          <div class="video-slot-placeholder">
+            <div class="play-icon">▶</div>
+            <p>Embed Scene Clip Here</p>
+            <span>Cells at Work! S1:E12–13 — Hemorrhagic shock sequence</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHAT HAPPENED -->
+      <div class="content-section">
+        <div class="section-label">The Emergency</div>
+        <h3 class="section-title">When Blood Pressure Collapses</h3>
+        <div class="section-body">
+          <p>A severe traumatic head injury ruptures major blood vessels, triggering rapid, massive hemorrhage. As blood volume plummets, blood pressure collapses — and without adequate pressure, even healthy red blood cells can't circulate fast enough to deliver oxygen to critical organs.</p>
+          <p>The anime depicts this as a cascading environmental disaster inside the body: temperatures plunge (hypothermia), workers collapse from exhaustion (oxygen-starved tissues), and infrastructure breaks down (failing organs). It's dramatic, but it's also a surprisingly faithful model of what hypovolemic shock actually feels like from the body's perspective.</p>
+        </div>
+      </div>
+
+      <!-- QUICK FACTS -->
+      <div class="fact-grid">
+        <div class="fact-card">
+          <div class="fact-card-icon">🩸</div>
+          <div class="fact-card-num" style="color: var(--accent-cells)">~5L</div>
+          <div class="fact-card-label">Average adult total blood volume</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-card-icon">⚠️</div>
+          <div class="fact-card-num" style="color: var(--accent-cells)">30%</div>
+          <div class="fact-card-label">Loss threshold triggering Class III shock</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-card-icon">🌡️</div>
+          <div class="fact-card-num" style="color: var(--accent-cells)">&lt;35°C</div>
+          <div class="fact-card-label">Core temp where hypothermia impairs coagulation</div>
+        </div>
+      </div>
+
+      <!-- COMPARISON TABLE -->
+      <div class="content-section">
+        <div class="section-label">On Screen vs. Reality</div>
+        <h3 class="section-title">The Anime's Accuracy, Graded</h3>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="on-screen">On Screen (Anime)</th>
+              <th class="real-world">Real Physiology</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pressure drop</td>
+              <td class="on-screen">Depicted as sudden infrastructure collapse and chaos</td>
+              <td class="real-world">Accurate — BP falls sharply as volume drops; baroreceptors trigger emergency responses</td>
+            </tr>
+            <tr>
+              <td>Hypothermia</td>
+              <td class="on-screen">Shown as a violent blizzard inside the body</td>
+              <td class="real-world">Accurate — body loses thermoregulatory capacity during massive hemorrhage</td>
+            </tr>
+            <tr>
+              <td>RBC exhaustion</td>
+              <td class="on-screen">Red blood cell characters collapse from overwork</td>
+              <td class="real-world">Accurate metaphor — remaining cells compensate by increasing cardiac output until the heart fails</td>
+            </tr>
+            <tr>
+              <td>Solution</td>
+              <td class="on-screen">Thousands of "reinforcements" arrive (transfusion)</td>
+              <td class="real-world">Accurate — packed red blood cells + plasma transfusion is the definitive treatment</td>
+            </tr>
+            <tr>
+              <td>Coagulation</td>
+              <td class="on-screen">Platelet characters attempt to plug wounds</td>
+              <td class="real-world">Accurate — platelet aggregation and the coagulation cascade are real first-response mechanisms</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- UNTREATED -->
+      <div class="content-section">
+        <div class="section-label">If Left Untreated</div>
+        <h3 class="section-title">The Lethal Triad of Trauma</h3>
+        <div class="section-body">
+          <p>Hemorrhagic shock untreated doesn't just cause one problem — it causes three that amplify each other in a vicious spiral that trauma surgeons call the "lethal triad." Each element worsens the other two.</p>
+        </div>
+
+        <div class="triad-visual">
+          <div class="triad-item">
+            <div class="triad-icon">🥶</div>
+            <div class="triad-name">Hypothermia</div>
+          </div>
+          <div class="triad-item">
+            <div class="triad-icon">⚗️</div>
+            <div class="triad-name">Acidosis</div>
+          </div>
+          <div class="triad-item">
+            <div class="triad-icon">🩸</div>
+            <div class="triad-name">Coagulopathy</div>
+          </div>
+        </div>
+
+        <div class="section-body" style="margin-top: 1rem;">
+          <p><strong>Hypothermia</strong> impairs clotting enzyme function. <strong>Acidosis</strong> (lactic acid buildup from oxygen-starved tissues) further disables those same enzymes. <strong>Coagulopathy</strong> (the blood losing its ability to clot) makes the bleeding worse — which deepens the acidosis — which worsens the hypothermia. Past a certain point, the cycle cannot be interrupted without massive surgical intervention.</p>
+        </div>
+      </div>
+
+      <!-- FUNFACT -->
+      <div class="funfact-block" onclick="toggleFact(this)">
+        <div class="funfact-header">
+          <span>⚡ Did You Know?</span>
+          <span class="funfact-toggle">▾</span>
+        </div>
+        <div class="funfact-question">"Why do trauma surgeons deliberately keep some patients slightly hypothermic during surgery?"</div>
+        <div class="funfact-answer">
+          In certain types of cardiac and vascular surgery — particularly those requiring circulatory arrest — surgeons use controlled therapeutic hypothermia to slow cellular metabolism and buy extra time before brain damage sets in. Cooling the brain to around 18°C can extend the safe window of circulatory arrest from under 4 minutes to up to 40–60 minutes. The same physiology that kills in trauma is weaponized as a tool in the operating room.
+        </div>
+      </div>
+
+      <!-- REAL TREATMENT STEPS -->
+      <div class="content-section">
+        <div class="section-label">Real-World Treatment Protocol</div>
+        <h3 class="section-title">What Happens in the Trauma Bay</h3>
+        <div class="section-body">
+          <p>Hemorrhagic shock treatment follows a strict order of operations designed to interrupt the lethal triad before it becomes irreversible:</p>
+        </div>
+        <ul class="symptom-list" style="margin-top: 1rem; max-width: 65ch;">
+          <li><strong>Stop the bleeding</strong> — direct pressure, tourniquets, or emergency surgical ligation</li>
+          <li><strong>Fluid resuscitation</strong> — IV crystalloids (saline) temporarily prop up blood pressure while blood is typed</li>
+          <li><strong>Type and cross-match</strong> — compatibility testing to prevent fatal immune reaction to transfused blood</li>
+          <li><strong>Packed RBCs + plasma transfusion</strong> — the definitive treatment, administered in ~1:1:1 ratio with platelets</li>
+          <li><strong>Warming</strong> — heated blankets and warmed IV fluids actively fight hypothermia throughout</li>
+          <li><strong>Monitoring</strong> — continuous lactate measurement confirms tissues are receiving adequate oxygen</li>
+        </ul>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="quiz-block">
+        <div class="quiz-question">"In the lethal triad of trauma, which element directly causes the blood to lose its ability to clot?"</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false, 'Not quite. Hypothermia does impair clotting enzyme function, but the direct cause of coagulopathy is dilution of clotting factors and platelet dysfunction — often accelerated by both hypothermia and acidosis together.')">Hypothermia alone</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false, 'Acidosis does impair clotting enzymes, but it\'s not the sole direct cause — all three elements of the lethal triad work together in a destructive cycle.')">Acidosis alone</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true, 'Correct. The lethal triad is a vicious cycle: each element worsens the others. Hypothermia slows clotting enzyme activity. Acidosis further disables those enzymes. Both cause coagulopathy, which allows more bleeding, which deepens the other two. No single element can be cleanly isolated.')">All three reinforce each other</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+    </div><!-- /audit-main -->
+
+    <!-- SIDEBAR: BLOOD PHYSIOLOGY -->
+    <aside class="audit-sidebar">
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Biology Spotlight</div>
+        <h4 class="sidebar-title">Hemorrhagic Shock — Class System</h4>
+        <div class="sidebar-body">
+          <p>Doctors classify hemorrhagic shock on a four-tier scale based on estimated blood loss and physiological response:</p>
+        </div>
+        <ul class="symptom-list" style="margin-top: 0.75rem;">
+          <li><strong>Class I</strong> — up to 750 mL lost; no change in vital signs; body self-compensates</li>
+          <li><strong>Class II</strong> — 750–1,500 mL; heart rate rises; body straining to compensate</li>
+          <li><strong>Class III</strong> — 1,500–2,000 mL; BP drops; altered mental status; needs transfusion</li>
+          <li><strong>Class IV</strong> — over 2,000 mL; life-threatening; immediate surgery and transfusion</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">What a Transfusion Provides</div>
+        <h4 class="sidebar-title">Packed RBCs vs. Whole Blood</h4>
+        <div class="sidebar-body">
+          <p>Modern trauma centres typically use "component therapy" — separate bags of packed red blood cells, plasma (clotting factors), and platelets — rather than whole blood, allowing precise targeting of specific deficits.</p>
+          <p>However, there's growing evidence that whole blood transfusion (used widely in military trauma) may be superior in severe hemorrhage because it replaces everything simultaneously, reducing the time-to-coagulation-factor-replacement.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Cells at Work! Accuracy Notes</div>
+        <h4 class="sidebar-title">What the Anime Got Right</h4>
+        <ul class="symptom-list">
+          <li>Red blood cells cannot function below a threshold oxygen partial pressure — depicted accurately</li>
+          <li>Platelets as small, round, child-like characters — accurate to their size relative to RBCs</li>
+          <li>The "blizzard" metaphor for hypothermia — physiologically apt</li>
+          <li>Reinforcement cells arriving via transfusion as a unified force — accurate depiction of volume restoration</li>
+          <li>Heart working visibly harder — reflects compensatory tachycardia during shock</li>
+        </ul>
+      </div>
+
+    </aside>
+  </div><!-- /audit-grid -->
+</section>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- AUDIT 03 — THE LAST OF US                         -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="audit tlou" id="tlou">
+
+  <div class="audit-hero" data-num="03">
+    <p class="audit-meta">Audit 03 · The Last of Us (Video Game) · University of Eastern Colorado</p>
+    <h2 class="audit-title">
+      <span class="show-tag">Video Game</span>
+      The Rebar Impalement
+    </h2>
+    <p class="audit-subtitle">Joel is tackled off a balcony and impaled through the abdomen on a rusted metal spike. Ellie removes it, stitches the wound with a household needle, and weeks later injects him with penicillin.</p>
+  </div>
+
+  <div class="verdict fiction" style="margin: 0 8vw 2rem;">
+    <div class="verdict-badge">Fiction</div>
+    <div class="verdict-text">
+      <strong>The injury is realistic. The survival is not.</strong> Removing a rebar without surgical clamps would trigger fatal internal bleeding. Skin stitches cannot repair shredded organs. Joel's survival is pure video game plot armor.
+    </div>
+  </div>
+
+  <div class="audit-grid">
+    <div class="audit-main">
+
+      <!-- VIDEO SLOT -->
+      <div class="content-section">
+        <div class="section-label">Scene Clip</div>
+        <div class="video-slot">
+          <div class="video-slot-placeholder">
+            <div class="play-icon">▶</div>
+            <p>Embed Scene Clip Here</p>
+            <span>The Last of Us — Joel's rebar impalement and Ellie's field treatment</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHAT HAPPENED -->
+      <div class="content-section">
+        <div class="section-label">The Emergency</div>
+        <h3 class="section-title">A Rusted Bar Through the Gut</h3>
+        <div class="section-body">
+          <p>During an ambush at the University of Eastern Colorado, Joel is tackled from a second-story balcony and lands directly on a piece of exposed, vertical rebar. The bar penetrates through his torso, creating both an entry and exit wound through the abdominal cavity.</p>
+          <p>The abdominal cavity contains densely packed, highly vascular structures: the abdominal aorta, inferior vena cava, mesenteric arteries, liver, intestines, and kidneys. A bar impaling through that region at that velocity would almost certainly strike at least one of them.</p>
+        </div>
+      </div>
+
+      <!-- QUICK FACTS -->
+      <div class="fact-grid">
+        <div class="fact-card">
+          <div class="fact-card-icon">⏱️</div>
+          <div class="fact-card-num" style="color: var(--accent-tlou)">4 min</div>
+          <div class="fact-card-label">Time to death from severed aorta without intervention</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-card-icon">🦠</div>
+          <div class="fact-card-num" style="color: var(--accent-tlou)">10¹¹</div>
+          <div class="fact-card-label">Bacteria per mL of gut content — released if bowel is perforated</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-card-icon">🔩</div>
+          <div class="fact-card-num" style="color: var(--accent-tlou)">Plug</div>
+          <div class="fact-card-label">Impaled objects actually reduce bleeding while in place</div>
+        </div>
+      </div>
+
+      <!-- COMPARISON TABLE -->
+      <div class="content-section">
+        <div class="section-label">On Screen vs. Reality</div>
+        <h3 class="section-title">Ellie's Field Medicine, Audited</h3>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="on-screen">In the Game</th>
+              <th class="real-world">Real World</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Object removal</td>
+              <td class="on-screen">Ellie pulls Joel upward off the rebar immediately</td>
+              <td class="real-world">Never remove on-scene. Object is stabilized and cut; patient transported with it in place</td>
+            </tr>
+            <tr>
+              <td>The "plug" effect</td>
+              <td class="on-screen">Not addressed — no massive bleeding post-removal</td>
+              <td class="real-world">Removal without surgical clamps would open major vessels → fatal internal bleed within minutes</td>
+            </tr>
+            <tr>
+              <td>Wound closure</td>
+              <td class="on-screen">Household needle and thread stitches the skin</td>
+              <td class="real-world">Skin closure traps bacteria, fecal matter, and blood inside → accelerates peritonitis</td>
+            </tr>
+            <tr>
+              <td>Antibiotic choice</td>
+              <td class="on-screen">Penicillin injected weeks later</td>
+              <td class="real-world">Penicillin is narrow-spectrum; bowel perforation needs broad-spectrum IV antibiotics started immediately</td>
+            </tr>
+            <tr>
+              <td>Surgical repair</td>
+              <td class="on-screen">Never performed</td>
+              <td class="real-world">Exploratory laparotomy essential — vessel clamping, organ repair, abdominal washout are all mandatory</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- UNTREATED / TIMELINE -->
+      <div class="content-section">
+        <div class="section-label">Without Treatment</div>
+        <h3 class="section-title">The Real Countdown After Impalement</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-time">Minutes 1–5</div>
+            <div class="timeline-event">If a major vessel is severed (aorta, vena cava, mesenteric artery): exsanguination and death. The rebar, while in place, may partially tamponade the bleeding — removal collapses that effect instantly.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">Hours 1–6</div>
+            <div class="timeline-event">If somehow still alive: bowel bacteria flood the sterile peritoneal cavity. Peritonitis sets in — the abdominal lining becomes violently inflamed. Fever spikes. Pain becomes extraordinary.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">Days 1–3</div>
+            <div class="timeline-event">Peritonitis progresses to sepsis — bacteria and their toxins enter the bloodstream. The immune response begins destroying the patient's own organs. Blood pressure crashes.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">Days 3–7</div>
+            <div class="timeline-event">Septic shock → multi-organ failure. Without IV antibiotics, surgical washout, and ICU-level support, the mortality rate approaches 100%.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FUNFACT -->
+      <div class="funfact-block" onclick="toggleFact(this)">
+        <div class="funfact-header">
+          <span>⚡ Did You Know?</span>
+          <span class="funfact-toggle">▾</span>
+        </div>
+        <div class="funfact-question">"Is penicillin actually the right antibiotic for a bowel perforation — even if it had been given immediately?"</div>
+        <div class="funfact-answer">
+          No — and this is a critical distinction. Penicillin is narrow-spectrum: it's excellent against gram-positive organisms like Streptococcus, but bowel perforation releases a massive, mixed flora of gram-negative bacteria (like E. coli and Klebsiella) and anaerobes (like Bacteroides fragilis) that penicillin cannot cover. Real protocol calls for broad-spectrum IV combinations like piperacillin-tazobactam, or a carbapenems in severe cases. Even if Ellie had given the penicillin on day one, it would not have covered the primary pathogens involved.
+        </div>
+      </div>
+
+      <!-- REAL PROCEDURE -->
+      <div class="content-section">
+        <div class="section-label">Real Emergency Protocol</div>
+        <h3 class="section-title">How Trauma Surgeons Handle Impalement</h3>
+        <div class="section-body">
+          <p>Impalement injuries have a strict field and surgical protocol that is almost the exact opposite of what Ellie does in the game:</p>
+        </div>
+        <ul class="symptom-list" style="margin-top: 1rem; max-width: 65ch;">
+          <li>Do NOT remove the object on scene — it may be the only thing preventing exsanguination</li>
+          <li>Stabilize the object in place using bulky dressings and, if needed, cut surrounding material</li>
+          <li>Transport urgently to a trauma center with the object still in situ</li>
+          <li>Exploratory laparotomy in the OR — open the abdomen, visualize all damage</li>
+          <li>Controlled removal with surgical clamps immediately controlling any bleeding vessels</li>
+          <li>Repair of torn organs — bowel resection and reanastomosis if perforation present</li>
+          <li>Thorough abdominal washout (irrigation) to remove contamination</li>
+          <li>Broad-spectrum IV antibiotics started pre-operatively and continued post-op</li>
+        </ul>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="quiz-block">
+        <div class="quiz-question">"Why do emergency protocols explicitly forbid removing an impaled object at the scene, even if the patient is in pain?"</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false, 'Not quite — while contamination is a concern, it\'s already happened the moment of penetration. The primary reason is hemorrhage control.')">To prevent introducing more contamination</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true, 'Correct. The object physically plugs — or tamponades — the wound, mechanically compressing damaged blood vessels and slowing hemorrhage. Without surgical clamps ready to instantly take over that job, removal converts a controlled bleed into a catastrophic open hemorrhage.')">Because the object is acting as a plug controlling the bleed</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false, 'Pain management is a concern, but it\'s secondary. The primary reason is hemorrhage control — the object may be the only thing keeping the patient alive.')">To preserve the wound for forensic evidence</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+    </div><!-- /audit-main -->
+
+    <!-- SIDEBAR: ABDOMINAL TRAUMA -->
+    <aside class="audit-sidebar">
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Biology Spotlight</div>
+        <h4 class="sidebar-title">What's in the Abdominal Cavity</h4>
+        <div class="sidebar-body">
+          <p>The abdomen is one of the most densely vascular regions of the body. A rebar impaling through it at velocity could strike any combination of:</p>
+        </div>
+        <ul class="symptom-list" style="margin-top: 0.75rem;">
+          <li><strong>Abdominal aorta</strong> — main arterial trunk; rupture is almost immediately fatal</li>
+          <li><strong>Inferior vena cava</strong> — massive venous return; rupture causes rapid exsanguination</li>
+          <li><strong>Liver</strong> — highly vascular; even partial lacerations cause significant hemorrhage</li>
+          <li><strong>Bowel</strong> — perforation releases billions of bacteria directly into the peritoneum</li>
+          <li><strong>Mesenteric vessels</strong> — supply the intestines; damage causes bowel ischemia</li>
+          <li><strong>Kidneys</strong> — retroperitoneal; bleed heavily when lacerated</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">Why Penicillin Was Wrong</div>
+        <h4 class="sidebar-title">The Antibiotic Mismatch</h4>
+        <div class="sidebar-body">
+          <p>Bowel flora is polymicrobial — a complex, mixed community of gram-positive, gram-negative, and anaerobic organisms. Penicillin covers only a narrow subset of these, missing the most dangerous gram-negative and anaerobic species entirely.</p>
+          <p>Standard empirical coverage for abdominal perforation typically combines a beta-lactam (like piperacillin) with a beta-lactamase inhibitor (tazobactam), plus metronidazole for anaerobic coverage — none of which are penicillin alone.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-module">
+        <div class="sidebar-label">What Peritonitis Feels Like</div>
+        <h4 class="sidebar-title">The Clinical Signature</h4>
+        <div class="sidebar-body">
+          <p>Peritonitis — infection of the peritoneal lining — presents with a classic, distinctive physical sign called "board-like rigidity." The abdominal wall becomes involuntarily rigid, as if made of wood, a reflex the body uses to guard the inflamed cavity from any movement. Touching the abdomen causes excruciating pain. Any movement — breathing, coughing — becomes agonizing. It's one of the clearest signs in all of emergency medicine.</p>
+        </div>
+        <ul class="symptom-list" style="margin-top: 0.75rem;">
+          <li>Board-like abdominal rigidity — involuntary guarding</li>
+          <li>Rebound tenderness — pain worsens when pressure is released, not applied</li>
+          <li>High fever with rigors (shaking chills)</li>
+          <li>Absent bowel sounds — paralytic ileus</li>
+          <li>Rapid progression to septic shock without treatment</li>
+        </ul>
+      </div>
+
+    </aside>
+  </div><!-- /audit-grid -->
+</section>
+
+
+<!-- ─── FOOTER ──────────────────────────────────────── -->
+<footer>
+  <div class="footer-brand">Under the Microscope</div>
+  <div class="footer-note">
+    All medical information is presented for educational purposes. This site evaluates fictional portrayals of medical emergencies — it is not a substitute for professional medical advice. Consult a licensed physician for any health concerns.
+  </div>
+</footer>
+
+
+<script>
+  function toggleFact(el) {
+    const answer = el.querySelector('.funfact-answer');
+    const toggle = el.querySelector('.funfact-toggle');
+    answer.classList.toggle('visible');
+    toggle.classList.toggle('open');
+  }
+
+  function answerQuiz(btn, correct, feedback) {
+    const block = btn.closest('.quiz-block');
+    const opts = block.querySelectorAll('.quiz-opt');
+    const fb = block.querySelector('.quiz-feedback');
+
+    opts.forEach(o => { o.disabled = true; });
+    btn.classList.add(correct ? 'correct' : 'wrong');
+
+    fb.textContent = feedback;
+    fb.classList.add('visible');
+  }
+</script>
+</body>
+</html>
