@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
+  
 <style>
   :root {
     --bg: #0d0d0d;
@@ -35,6 +36,15 @@
     font-weight: 300;
     line-height: 1.7;
     overflow-x: hidden;
+  }
+
+   /* ── MEDIA DEFAULTS ── */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px; 
+    margin: 1rem 0; 
   }
 
   /* ── HEADER ── */
@@ -387,6 +397,8 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--muted);
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   .video-slot-placeholder span {
@@ -433,6 +445,15 @@
   .compare-table .on-screen { color: #d95757; }
   .compare-table .real-world { color: #5bbf72; }
 
+  /* ── RESPONSIVE TABLE WRAPPER ── */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
+    margin: 1.5rem 0;
+    border-radius: 4px;
+  }
+  
   /* ── FACT CARDS ── */
   .fact-grid {
     display: grid;
@@ -851,6 +872,7 @@
         <p>In the show, House simply physically opens up an incision in her small intestine, reaches into her gut with his hands and a pair of forceps, and manually pulls the wriggling, 25-foot-long live tapeworm directly out of her body.</p>
         
         <p>If the procedure was done in the real world, the tapeworm would break since they are extremely fragile. Pulling it manually would likely snap the body, leaving the head (scolex) securely hooked into the intestinal wall, allowing the entire worm to just grow right back. Additionally, Cutting open a patient's bowel during surgery exposes the sterile abdominal cavity to highly dangerous gut bacteria. In the real world, this would likely cause peritonitis—a disease where the thin inner lining of the abdominal tissue experiences inflammation—and fatal septic shock, which is when infectious entities within body causing things like organ failure, blood vessel leakage, and low blood pressure.</p>
+        <div class="table-responsive">
         <table class="compare-table">
           <thead>
             <tr>
@@ -896,10 +918,10 @@
           <p>Prolonged B12 deficiency from an untreated fish tapeworm triggers a condition called subacute combined degeneration of the spinal cord. In this condition, the myelin sheaths protecting nerve fibers begin to break down. Since neural cells don't go through mitosis and regenerate, past a certain threshold, the breakdown of myelin sheaths cannot be reversed or "saved."</p>
           <p>While a tapeworm taking vitamin B12 in the small intestine may not seem like it could problems in the brain, it only indirectly causes problems. Without enough B12, homocysteine and methylmalonic acid can build up from within the body, which causes the brain to become overstimulated and cause seizures. As this continues, it can cause permanent nerve damage. Another thing that a lack of B12 causes is megaloblastic anemia, since B12 is a factor influencing the structure of red blood cells. Both the nerve damage and the megaloblastic anemia can contribute to extreme moods and organ failure, eventually leading to death. During this process the "window" for full recovery is still there, but it would need to be acted upon as soon as possible.</p>
         </div>
-      </div>
+      </div>      
   <img src="https://raw.githubusercontent.com/Jason-Q1925/Medical-Emergency-Fact-or-Fiction/main/FT.jpg" alt="Fish Tapeworm. Credit to CDC">
   <img src="https://raw.githubusercontent.com/Jason-Q1925/Medical-Emergency-Fact-or-Fiction/main/FTE.jpg" alt="Fish Tapeworm Eggs. Credit to CDC">
-  <img src="https://raw.githubusercontent.com/Jason-Q1925/Medical-Emergency-Fact-or-Fiction/main/FTLC.jpg" alt="Fish Tapeworm Life Cycle. Credit to CDC" style="width: auto; height: 50%;">
+  <img src="https://raw.githubusercontent.com/Jason-Q1925/Medical-Emergency-Fact-or-Fiction/main/FTLC.jpg" alt="Fish Tapeworm Life Cycle. Credit to CDC">
       <!-- INTERACTIVE FUNFACT -->
       <div class="funfact-block" onclick="toggleFact(this)">
         <div class="funfact-header">
